@@ -1,18 +1,15 @@
 import React, { PureComponent } from 'react'
 import CommentList from './comments/comment-list'
+import collapse from '../decorators/collapse'
 
 class Article extends PureComponent {
-  state = {
-    commentsShown: false
-  }
-
   render() {
     console.log('---', 'rendering')
-    const { article, isOpen } = this.props
+    const { article, isOpen, isCollapse, toggleCollapse } = this.props
 
     const toggleCommentsBtn = (
-      <button onClick={this.toggleComments}>
-        {this.state.commentsShown ? 'Hide comments' : 'Show comments'}
+      <button onClick={toggleCollapse}>
+        {isCollapse ? 'Hide comments' : 'Show comments'}
       </button>
     )
 
@@ -20,9 +17,7 @@ class Article extends PureComponent {
       <section>
         {article.text}
         {article.comments && <p>{toggleCommentsBtn}</p>}
-        {this.state.commentsShown && (
-          <CommentList comments={article.comments} />
-        )}
+        {isCollapse && <CommentList comments={article.comments} />}
       </section>
     )
 
@@ -42,12 +37,8 @@ class Article extends PureComponent {
   setTitleRef = (titleRef) => console.log(titleRef)
 
   handleBtnClick = () => this.props.toggleOpen(this.props.article.id)
-
-  toggleComments = () => {
-    this.setState({
-      commentsShown: !this.state.commentsShown
-    })
-  }
 }
 
-export default Article
+const ArticleWithCollapse = collapse(Article)
+
+export default ArticleWithCollapse
