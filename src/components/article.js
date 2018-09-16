@@ -1,9 +1,31 @@
 import React, { PureComponent } from 'react'
+import CommentList from './comments/comment-list'
 
 class Article extends PureComponent {
+  state = {
+    commentsShown: false
+  }
+
   render() {
     console.log('---', 'rendering')
     const { article, isOpen } = this.props
+
+    const toggleCommentsBtn = (
+      <button onClick={this.toggleComments}>
+        {this.state.commentsShown ? 'Hide comments' : 'Show comments'}
+      </button>
+    )
+
+    const articleContent = (
+      <section>
+        {article.text}
+        {article.comments && <p>{toggleCommentsBtn}</p>}
+        {this.state.commentsShown && (
+          <CommentList comments={article.comments} />
+        )}
+      </section>
+    )
+
     return (
       <div>
         <div>
@@ -12,7 +34,7 @@ class Article extends PureComponent {
             {isOpen ? 'close' : 'open'}
           </button>
         </div>
-        {isOpen && <section>{article.text}</section>}
+        {isOpen && articleContent}
       </div>
     )
   }
@@ -20,6 +42,12 @@ class Article extends PureComponent {
   setTitleRef = (titleRef) => console.log(titleRef)
 
   handleBtnClick = () => this.props.toggleOpen(this.props.article.id)
+
+  toggleComments = () => {
+    this.setState({
+      commentsShown: !this.state.commentsShown
+    })
+  }
 }
 
 export default Article
